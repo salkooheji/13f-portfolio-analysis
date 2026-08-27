@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: edgar13f
+Version: 1.0.0
+Summary: Reconstructs institutional portfolios from raw SEC 13F filings
+Requires-Python: >=3.10

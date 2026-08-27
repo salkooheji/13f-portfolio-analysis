@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edgar13f"
+version = "1.0.0"
+description = "Reconstructs institutional portfolios from raw SEC 13F filings"
+requires-python = ">=3.10"
+
+[tool.setuptools]
+packages = [
+    "edgar13f",
+    "edgar13f.ingest",
+    "edgar13f.parse",
+    "edgar13f.normalize",
+    "edgar13f.analysis",
+]
