@@ -64,6 +64,7 @@ def quarter_positions(conn, cik: int, period: str) -> pd.DataFrame:
                SUM(shares) AS shares, SUM(value_usd) AS value_usd
         FROM holdings
         WHERE accession_no IN ({placeholders}) AND share_type = 'SH'
+          AND put_call IS NULL
         GROUP BY cusip
         """,
         conn,

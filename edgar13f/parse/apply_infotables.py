@@ -30,8 +30,8 @@ def apply_infotables(conn) -> tuple[int, int]:
                 """
                 INSERT INTO holdings
                     (accession_no, row_index, issuer_name, class_title,
-                     cusip, raw_value, shares, share_type)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                     cusip, raw_value, shares, share_type, put_call)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     (
@@ -43,6 +43,7 @@ def apply_infotables(conn) -> tuple[int, int]:
                         row["raw_value"],
                         row["shares"],
                         row["share_type"],
+                        row["put_call"],
                     )
                     for row in rows
                 ],

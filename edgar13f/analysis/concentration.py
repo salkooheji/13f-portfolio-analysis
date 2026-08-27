@@ -59,3 +59,36 @@ def turnover(conn, cik: int, period_prev: str, period_curr: str) -> dict:
             round(100.0 * float(traded / average_book), 2) if average_book else 0.0
         ),
     }
+
+def option_exposure(conn, cik: int, period: str) -> dict:
+    """Share of the quarter's raw filing value sitting in option
+    positions, which are excluded from share-based analysis. 13F
+    reports option positions at underlying notional value, so this
+    overstates capital at risk; it is reported for visibility, not
+    treated as portfolio weight."""
+    from edgar13f.analysis.diffs import quarter_filings
+
+    accessions = quarter_filings(conn, cik, period)
+    if not accessions:
+        return {"options_pct_of_raw_value": 0.0, "n_option_rows": 0}
+    placeholders = ",".join("?" * len(accessions))
+    row = conn.execute(
+        f"""
+        SELECT
+            SUM(value_usd) AS total,
+            SUM(CASE WHEN put_call IS NOT NULL THEN value_usd ELSE 0 END)
+                AS options,
+            SUM(CASE WHEN put_call IS NOT NULL THEN 1 ELSE 0 END)
+                AS n_rows
+        FROM holdings
+        WHERE accession_no IN ({placeholders})
+        """,
+        accessions,
+    ).fetchone()
+    total = row["total"] or 0
+    return {
+        "options_pct_of_raw_value": (
+            round(100.0 * (row["options"] or 0) / total, 2) if total else 0.0
+        ),
+        "n_option_rows": row["n_rows"] or 0,
+    }

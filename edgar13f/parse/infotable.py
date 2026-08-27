@@ -70,6 +70,10 @@ def parse_infotable(raw: bytes) -> list[dict]:
                 "raw_value": value,
                 "shares": _to_int(_first_text(entry, "sshPrnamt")),
                 "share_type": _first_text(entry, "sshPrnamtType"),
+                # Present only for option positions. A filing row with
+                # putCall set reports the option's underlying shares,
+                # not an equity holding, and must not be treated as one.
+                "put_call": _first_text(entry, "putCall"),
             }
         )
     return rows

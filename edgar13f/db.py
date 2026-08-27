@@ -68,6 +68,8 @@ def init_db(conn: sqlite3.Connection) -> None:
                                                   -- NULL until units known
             shares            INTEGER,
             share_type        TEXT,               -- SH or PRN
+            put_call          TEXT,               -- Put, Call, or NULL for
+                                                  -- an actual equity holding
             PRIMARY KEY (accession_no, row_index)
         );
 
@@ -113,4 +115,3 @@ def init_db(conn: sqlite3.Connection) -> None:
         """
     )
     conn.commit()
-    
