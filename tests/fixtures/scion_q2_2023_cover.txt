@@ -1,0 +1,55 @@
+<XML>
+<?xml version="1.0" encoding="UTF-8"?>
+<edgarSubmission xmlns:com="http://www.sec.gov/edgar/common" xmlns="http://www.sec.gov/edgar/thirteenffiler">
+  <schemaVersion>X0202</schemaVersion>
+  <headerData>
+    <submissionType>13F-HR</submissionType>
+    <filerInfo>
+      <liveTestFlag>LIVE</liveTestFlag>
+      <filer>
+        <credentials>
+          <cik>0001649339</cik>
+          <ccc>XXXXXXXX</ccc>
+        </credentials>
+      </filer>
+      <periodOfReport>09-30-2023</periodOfReport>
+    </filerInfo>
+  </headerData>
+  <formData>
+    <coverPage>
+      <reportCalendarOrQuarter>09-30-2023</reportCalendarOrQuarter>
+      <isAmendment>false</isAmendment>
+      <filingManager>
+        <name>Scion Asset Management, LLC</name>
+        <address>
+          <com:street1>20665 4TH STREET</com:street1>
+          <com:street2>SUITE 201</com:street2>
+          <com:city>SARATOGA</com:city>
+          <com:stateOrCountry>CA</com:stateOrCountry>
+          <com:zipCode>95070</com:zipCode>
+        </address>
+      </filingManager>
+      <reportType>13F HOLDINGS REPORT</reportType>
+      <form13FFileNumber>028-17276</form13FFileNumber>
+      <crdNumber>000167772</crdNumber>
+      <secFileNumber>801-113529</secFileNumber>
+      <provideInfoForInstruction5>Y</provideInfoForInstruction5>
+      <additionalInformation>Please note that the Investment Manager is reporting long put option positions on this Form 13F in the manner prescribed by Special Instruction 10 and FAQs 41 and 44 (i.e., gross long put options reported in terms of the securities underlying the options). As such, the reported value in this Form 13F is different from the actual value of such unexercised long put options as reflected in the Investment Manager's books and records, and the Form 13F report excludes any short positions on the Investment Manager's books and records, which may serve to hedge the long positions.</additionalInformation>
+    </coverPage>
+    <signatureBlock>
+      <name>Michael J. Burry</name>
+      <title>Chief Executive Officer</title>
+      <phone>408-441-8400</phone>
+      <signature>/s/ Michael J. Burry</signature>
+      <city>Saratoga</city>
+      <stateOrCountry>CA</stateOrCountry>
+      <signatureDate>11-14-2023</signatureDate>
+    </signatureBlock>
+    <summaryPage>
+      <otherIncludedManagersCount>0</otherIncludedManagersCount>
+      <tableEntryTotal>13</tableEntryTotal>
+      <tableValueTotal>98976144</tableValueTotal>
+    </summaryPage>
+  </formData>
+</edgarSubmission>
+</XML>
