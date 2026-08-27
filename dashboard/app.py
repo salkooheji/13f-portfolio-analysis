@@ -20,6 +20,8 @@ from edgar13f.analysis.concentration import (
 )
 from edgar13f.analysis.diffs import diff_quarters, quarter_filings
 from edgar13f.analysis.overlap import overlap_pct
+from edgar13f.analysis.clustering import similarity_matrix
+from edgar13f.analysis.position_tracker import track_position
 from edgar13f.config import load_config
 
 st.set_page_config(page_title="13F Portfolio Analysis", layout="wide")
@@ -82,8 +84,9 @@ if period_prev:
         "(approximate: quarter-end snapshots conflate trades with price moves)"
     )
 
-tab_holdings, tab_changes, tab_sectors, tab_compare = st.tabs(
-    ["Holdings", "Quarterly changes", "Sectors", "Compare managers"]
+tab_holdings, tab_changes, tab_sectors, tab_compare, tab_similarity, tab_track = st.tabs(
+    ["Holdings", "Quarterly changes", "Sectors", "Compare managers",
+     "Similarity", "Track a position"]
 )
 
 with tab_holdings:
@@ -177,3 +180,65 @@ with tab_compare:
         f"{forward['n_shared_positions']} shared positions in quarter "
         f"{period}."
     )
+
+with tab_similarity:
+    all_ciks = list(managers.values())
+    sim = similarity_matrix(conn, all_ciks, period)
+    names_by_cik = {v: k for k, v in managers.items()}
+    sim_named = sim.rename(index=names_by_cik, columns=names_by_cik)
+    fig_sim = px.imshow(
+        sim_named, zmin=0, zmax=1, color_continuous_scale="Blues",
+        text_auto=".2f",
+    )
+    st.plotly_chart(fig_sim, use_container_width=True)
+    st.caption(
+        "Cosine similarity of portfolio weight vectors in quarter "
+        f"{period}. With five managers this demonstrates the "
+        "machinery rather than discovering structure; it scales "
+        "unchanged to hundreds of filers."
+    )
+
+with tab_track:
+    choices = pd.read_sql_query(
+        """
+        SELECT DISTINCT m.ticker, m.company_name, m.cusip
+        FROM cusip_map m
+        JOIN holdings h ON h.cusip = m.cusip
+        WHERE m.status = 'resolved' AND m.ticker IS NOT NULL
+        ORDER BY m.ticker
+        """,
+        conn,
+    )
+    labels = choices.apply(
+        lambda r: f"{r['ticker']}  ({r['company_name']})", axis=1
+    ).tolist()
+    default_index = next(
+        (i for i, lab in enumerate(labels) if lab.startswith("AAPL")), 0
+    )
+    picked = st.selectbox(
+        "Security", labels, index=default_index,
+        help="Type to search. Only securities actually held by the "
+             "tracked managers are listed.",
+    )
+    row = choices.iloc[labels.index(picked)]
+    candidate = row["ticker"]
+    cusip = row["cusip"]
+    tracked = track_position(
+        conn, cusip, list(managers.values()), sorted(periods)
+    )
+    names_by_cik = {v: k for k, v in managers.items()}
+    tracked = tracked.rename(columns=names_by_cik)
+    held = tracked.loc[:, (tracked != 0).any()]
+    if held.empty:
+        st.info(f"No tracked manager held {candidate} in these quarters.")
+    else:
+        fig_track = px.line(held, markers=True)
+        fig_track.update_layout(
+            yaxis_title="Shares held", xaxis_title="Quarter end",
+            legend_title="Manager",
+        )
+        st.plotly_chart(fig_track, use_container_width=True)
+        st.caption(
+            f"Shares of {candidate} (CUSIP {cusip}) as reported per "
+            "quarter. Shares are unadjusted for corporate actions."
+        )
