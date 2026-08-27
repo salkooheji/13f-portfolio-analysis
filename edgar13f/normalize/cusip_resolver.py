@@ -188,10 +188,14 @@ def refine_unresolved(conn) -> dict:
     )
 
     def unresolved() -> list[str]:
+        # Only first-pass failures: rows already stamped
+        # fallbacks_exhausted have been through every strategy and
+        # are never retried, which keeps repeat runs fast.
         return [
             row["cusip"]
             for row in conn.execute(
-                "SELECT cusip FROM cusip_map WHERE status = 'unresolved'"
+                "SELECT cusip FROM cusip_map "
+                "WHERE status = 'unresolved' AND source = 'openfigi'"
             )
         ]
 
@@ -215,7 +219,13 @@ def refine_unresolved(conn) -> dict:
         batch_size, pause,
     )
 
-    summary["still_unresolved"] = len(unresolved())
+    exhausted = unresolved()
+    conn.execute(
+        "UPDATE cusip_map SET source = 'fallbacks_exhausted' "
+        "WHERE status = 'unresolved' AND source = 'openfigi'"
+    )
+    conn.commit()
+    summary["fallbacks_exhausted"] = len(exhausted)
     return summary
 
 
