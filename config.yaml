@@ -1,0 +1,25 @@
+# SEC EDGAR requires a User-Agent identifying the requester.
+# Format: "Name email". This is a fair-access policy header, not a registration.
+sec_user_agent: "Salman Alkooheji s.alkooheji76@gmail.com"
+
+# Managers to track, identified by SEC CIK number.
+managers:
+  - cik: 1067983
+    name: "Berkshire Hathaway Inc"
+  - cik: 1350694
+    name: "Bridgewater Associates, LP"
+  - cik: 1649339
+    name: "Scion Asset Management, LLC"
+  - cik: 1336528
+    name: "Pershing Square Capital Management, L.P."
+  - cik: 1037389
+    name: "Renaissance Technologies LLC"
+
+# Quarters to ingest, straddling the SEC value-units change at Q4 2022.
+quarters:
+  start: "2022-09-30"
+  end: "2024-06-30"
+
+paths:
+  raw_dir: "data/raw"
+  database: "data/portfolio.db"
