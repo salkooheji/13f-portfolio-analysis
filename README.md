@@ -1,5 +1,12 @@
 # 13F Portfolio Analysis
 
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.36-red)
+![SQLite](https://img.shields.io/badge/SQLite-raw%20SQL-lightgrey)
+![Tests](https://img.shields.io/badge/pytest-11%20passed-brightgreen)
+![Parse coverage](https://img.shields.io/badge/Parse%20coverage-100%25-brightgreen)
+![CUSIP resolution](https://img.shields.io/badge/CUSIP%20resolution%20by%20value-99.68%25-brightgreen)
+
 Reconstructs institutional investment portfolios from raw SEC 13F filings,
 tracks how they change quarter over quarter, and serves the results in a
 dashboard where every number is traceable to the filing that produced it.
@@ -15,6 +22,8 @@ quarter, how concentrated is their book, how does it split by sector, and
 how much does it overlap with another manager's. Bonus analytics cluster
 managers by holdings similarity and track a single security across all
 filers over time.
+
+![Dashboard](docs/images/dashboard_holdings.png)
 
 ## Results on the shipped configuration
 
@@ -36,6 +45,39 @@ All figures are produced by the code (`parse_coverage`,
 Unresolved securities and option positions are excluded from analysis
 visibly, with their share of book value measured and displayed, never
 silently dropped.
+
+### Quarter-over-quarter changes, from primary filings
+
+![Quarterly changes](docs/images/quarterly_changes.png)
+
+Berkshire's Q2 2024: the halving of the Apple stake, new positions in Ulta
+and Heico, every change computed from share counts per CUSIP and traceable
+to its accession number.
+
+### Amendments composed correctly
+
+![Amendment view](docs/images/amendment_view.png)
+
+Berkshire's Q4 2023 view is built from two filings: the original plus the
+NEW HOLDINGS amendment that revealed the Chubb position previously omitted
+under confidential treatment. The Chubb row carries the amendment's
+accession number; everything else carries the original's.
+
+### Sector allocation
+
+![Sectors](docs/images/sectors.png)
+
+Sector split from SEC SIC codes, with the unclassified remainder visible
+rather than dropped.
+
+### Cross-manager analytics
+
+![Similarity](docs/images/similarity_heatmap.png)
+
+![Position tracking](docs/images/track_position.png)
+
+Cosine similarity across manager weight vectors, and Berkshire's Occidental
+accumulation tracked across eight quarters of filings.
 
 ## Setup
 
